@@ -1,0 +1,22 @@
+--extra-index-url https://download.pytorch.org/whl/cu124
+
+
+gtfs2nx>=0.1.2
+networkx>=3.1
+osmnx>=1.6.0
+numpy>=1.23.5
+pandas>=2.0.0
+geopandas>=0.14.3
+fiona>=1.10.0
+pyogrio>=0.8.0
+geopy>=2.4.1
+ripser>=0.6.4
+persim>=0.3.1
+matplotlib>=3.7.1
+folium>=0.14.0
+branca>=0.7.0
+torch>=2.0.1
+torch-geometric>=2.3.1
+requests>=2.31.0
+IPython>=7.34.0
+ipykernel>=6.29.5
