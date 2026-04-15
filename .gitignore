@@ -1,0 +1,31 @@
+# Agents
+.claude
+.gemini
+.cursor
+
+
+
+outputs/
+/Data/
+/Graphs/
+geodata/
+logs/
+output/
+
+# Python
+uv.lock
+.python-version
+
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.env
+*.venv
+env/
+venv/
+ENV/
+
+.DS_Store
+
+
