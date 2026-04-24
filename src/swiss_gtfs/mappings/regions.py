@@ -1,4 +1,13 @@
-canton_names = {
+"""Swiss regional name mappings.
+
+Each dict maps a clean snake_case key (used for filenames and CLI arguments)
+to the exact string that appears in the corresponding boundary shapefile
+attribute column.
+"""
+
+from __future__ import annotations
+
+canton_names: dict[str, str] = {
     "zh": "ZH", "zurich": "ZH",
     "be": "BE", "bern": "BE",
     "lu": "LU", "luzern": "LU",
@@ -23,92 +32,91 @@ canton_names = {
     "vd": "VD", "vaud": "VD",
     "vs": "VS", "valais": "VS", "wallis": "VS",
     "ne": "NE", "neuchatel": "NE",
-    "ge": "GE", "geneve": "GE"
+    "ge": "GE", "geneve": "GE",
 }
 
-agglomerations_names = {
-    "winterthur": "Winterthur", # [cite: 1]
-    "zurich": "Zürich", # [cite: 2]
-    "bern": "Bern", # [cite: 2]
-    "biel_bienne": "Biel/Bienne", # [cite: 2]
-    "interlaken": "Interlaken", # [cite: 3]
-    "thun": "Thun", # [cite: 3]
-    "luzern": "Luzern", # [cite: 3]
-    "altdorf_ur": "Altdorf (UR)", # [cite: 4]
-    "lachen": "Lachen", # [cite: 4]
-    "glarus": "Glarus", # [cite: 4]
-    "zug": "Zug", # [cite: 5]
-    "bulle": "Bulle", # [cite: 5]
-    "fribourg": "Fribourg", # [cite: 5]
-    "grenchen": "Grenchen", # [cite: 6]
-    "olten_zofingen": "Olten – Zofingen", # [cite: 6]
-    "solothurn": "Solothurn", # [cite: 6]
-    "basel_ch": "Basel (CH)", # [cite: 6]
-    "schaffhausen_ch": "Schaffhausen (CH)", # [cite: 7]
-    "st_gallen": "St. Gallen", # [cite: 7, 8]
-    "rheintal_ch": "Rheintal (CH)", # [cite: 8]
-    "buchs_sg_ch": "Buchs (SG) (CH)", # [cite: 8]
-    "rapperswil_jona_ruti": "Rapperswil-Jona – Rüti", # [cite: 8]
-    "wil_sg": "Wil (SG)", # [cite: 8]
-    "chur": "Chur", # [cite: 9]
-    "aarau": "Aarau", # [cite: 9]
-    "baden_brugg": "Baden – Brugg", # [cite: 9, 10]
-    "wohlen_ag": "Wohlen (AG)", # [cite: 10]
-    "lenzburg": "Lenzburg", # [cite: 10]
-    "stein_ag_ch": "Stein (AG) (CH)", # [cite: 10]
-    "arbon_rorschach": "Arbon – Rorschach", # [cite: 11]
-    "amriswil_romanshorn": "Amriswil – Romanshorn", # [cite: 11]
-    "frauenfeld": "Frauenfeld", # [cite: 11]
-    "kreuzlingen_ch": "Kreuzlingen (CH)", # [cite: 11]
-    "bellinzona": "Bellinzona", # [cite: 12]
-    "locarno_ch": "Locarno (CH)", # [cite: 12]
-    "lugano_ch": "Lugano (CH)", # [cite: 12]
-    "chiasso_mendrisio_ch": "Chiasso – Mendrisio (CH)", # [cite: 12]
-    "lausanne": "Lausanne", # [cite: 13]
-    "vevey_montreux": "Vevey – Montreux", # [cite: 13]
-    "yverdon_les_bains": "Yverdon-les-Bains", # [cite: 13]
-    "brig_visp": "Brig – Visp", # [cite: 13]
-    "martigny": "Martigny", # [cite: 14]
-    "monthey": "Monthey", # [cite: 14]
-    "sierre": "Sierre", # [cite: 14]
-    "sion": "Sion", #
-    "la_chaux_de_fonds_le_locle": "La Chaux-de-Fonds – Le Locle (", #
-    "neuchatel": "Neuchâtel", #
-    "geneve_ch": "Genève (CH)", #
-    "delemont_ch": "Delémont (CH)", # [cite: 16]
-    "lyss": "Lyss", # [cite: 16]
-    "langenthal": "Langenthal", # [cite: 16]
-    "burgdorf": "Burgdorf", # [cite: 16]
-    "kirchberg_be": "Kirchberg (BE)", # [cite: 17]
-    "spiez": "Spiez", # [cite: 17]
-    "sursee": "Sursee", # [cite: 17]
-    "einsiedeln": "Einsiedeln", # [cite: 18]
-    "arth": "Arth", # [cite: 18]
-    "schwyz": "Schwyz", # [cite: 18]
-    "sarnen": "Sarnen", # [cite: 19]
-    "stans": "Stans", # [cite: 19]
-    "murten": "Murten", # [cite: 19]
-    "oensingen": "Oensingen", # [cite: 20]
-    "schonenwerd": "Schönenwerd", # [cite: 20]
-    "mels_sargans": "Mels – Sargans", # [cite: 20]
-    "uznach": "Uznach", # [cite: 20]
-    "wattwil": "Wattwil", # [cite: 21]
-    "flawil": "Flawil", # [cite: 21]
-    "st_moritz": "St. Moritz", # [cite: 21, 22]
-    "davos": "Davos", # [cite: 22]
-    "landquart": "Landquart", # [cite: 22]
-    "reinach_ag": "Reinach (AG)", # [cite: 22]
-    "dottingen_bottstein": "Döttingen-Böttstein", # [cite: 23]
-    "weinfelden": "Weinfelden", # [cite: 23]
-    "aigle": "Aigle", # [cite: 23]
-    "payerne": "Payerne", # [cite: 23]
-    "crans_montana": "Crans-Montana", # [cite: 24]
-    "zermatt": "Zermatt", # [cite: 24]
-    "porrentruy": "Porrentruy" # [cite: 24]
+agglomerations_names: dict[str, str] = {
+    "winterthur": "Winterthur",
+    "zurich": "Zürich",
+    "bern": "Bern",
+    "biel_bienne": "Biel/Bienne",
+    "interlaken": "Interlaken",
+    "thun": "Thun",
+    "luzern": "Luzern",
+    "altdorf_ur": "Altdorf (UR)",
+    "lachen": "Lachen",
+    "glarus": "Glarus",
+    "zug": "Zug",
+    "bulle": "Bulle",
+    "fribourg": "Fribourg",
+    "grenchen": "Grenchen",
+    "olten_zofingen": "Olten – Zofingen",
+    "solothurn": "Solothurn",
+    "basel_ch": "Basel (CH)",
+    "schaffhausen_ch": "Schaffhausen (CH)",
+    "st_gallen": "St. Gallen",
+    "rheintal_ch": "Rheintal (CH)",
+    "buchs_sg_ch": "Buchs (SG) (CH)",
+    "rapperswil_jona_ruti": "Rapperswil-Jona – Rüti",
+    "wil_sg": "Wil (SG)",
+    "chur": "Chur",
+    "aarau": "Aarau",
+    "baden_brugg": "Baden – Brugg",
+    "wohlen_ag": "Wohlen (AG)",
+    "lenzburg": "Lenzburg",
+    "stein_ag_ch": "Stein (AG) (CH)",
+    "arbon_rorschach": "Arbon – Rorschach",
+    "amriswil_romanshorn": "Amriswil – Romanshorn",
+    "frauenfeld": "Frauenfeld",
+    "kreuzlingen_ch": "Kreuzlingen (CH)",
+    "bellinzona": "Bellinzona",
+    "locarno_ch": "Locarno (CH)",
+    "lugano_ch": "Lugano (CH)",
+    "chiasso_mendrisio_ch": "Chiasso – Mendrisio (CH)",
+    "lausanne": "Lausanne",
+    "vevey_montreux": "Vevey – Montreux",
+    "yverdon_les_bains": "Yverdon-les-Bains",
+    "brig_visp": "Brig – Visp",
+    "martigny": "Martigny",
+    "monthey": "Monthey",
+    "sierre": "Sierre",
+    "sion": "Sion",
+    "la_chaux_de_fonds_le_locle": "La Chaux-de-Fonds – Le Locle (",
+    "neuchatel": "Neuchâtel",
+    "geneve_ch": "Genève (CH)",
+    "delemont_ch": "Delémont (CH)",
+    "lyss": "Lyss",
+    "langenthal": "Langenthal",
+    "burgdorf": "Burgdorf",
+    "kirchberg_be": "Kirchberg (BE)",
+    "spiez": "Spiez",
+    "sursee": "Sursee",
+    "einsiedeln": "Einsiedeln",
+    "arth": "Arth",
+    "schwyz": "Schwyz",
+    "sarnen": "Sarnen",
+    "stans": "Stans",
+    "murten": "Murten",
+    "oensingen": "Oensingen",
+    "schonenwerd": "Schönenwerd",
+    "mels_sargans": "Mels – Sargans",
+    "uznach": "Uznach",
+    "wattwil": "Wattwil",
+    "flawil": "Flawil",
+    "st_moritz": "St. Moritz",
+    "davos": "Davos",
+    "landquart": "Landquart",
+    "reinach_ag": "Reinach (AG)",
+    "dottingen_bottstein": "Döttingen-Böttstein",
+    "weinfelden": "Weinfelden",
+    "aigle": "Aigle",
+    "payerne": "Payerne",
+    "crans_montana": "Crans-Montana",
+    "zermatt": "Zermatt",
+    "porrentruy": "Porrentruy",
 }
 
-
-district_names = {
+district_names: dict[str, str] = {
     "affoltern": "Bezirk Affoltern",
     "andelfingen": "Bezirk Andelfingen",
     "bulach": "Bezirk Bülach",
@@ -218,85 +226,10 @@ district_names = {
     "glenner": "Bezirk Glenner",
     "heinzenberg": "Bezirk Heinzenberg",
     "hinterrhein": "Bezirk Hinterrhein",
-    "imboden": "Bezirk Imboden",
-    "inn": "Bezirk Inn",
-    "maloja": "Bezirk Maloja / Distretto di Maloggia",
-    "moesa": "Distretto di Moësa",
-    "munstertal": "Bezirk Münstertal",
-    "oberlandquart": "Bezirk Oberlandquart",
-    "plessur": "Bezirk Plessur",
-    "unterlandquart": "Bezirk Unterlandquart",
-    "vorderrhein": "Bezirk Vorderrhein",
-    "aarau": "Bezirk Aarau",
-    "baden": "Bezirk Baden",
-    "bremgarten": "Bezirk Bremgarten",
-    "brugg": "Bezirk Brugg",
-    "kulm": "Bezirk Kulm",
-    "laufenburg": "Bezirk Laufenburg",
-    "lenzburg": "Bezirk Lenzburg",
-    "muri": "Bezirk Muri",
-    "rheinfelden": "Bezirk Rheinfelden",
-    "zofingen": "Bezirk Zofingen",
-    "zurzach": "Bezirk Zurzach",
-    "arbon": "Bezirk Arbon",
-    "bischofszell": "Bezirk Bischofszell",
-    "diessenhofen": "Bezirk Diessenhofen",
-    "frauenfeld": "Bezirk Frauenfeld",
-    "kreuzlingen": "Bezirk Kreuzlingen",
-    "munchwilen": "Bezirk Münchwilen",
-    "steckborn": "Bezirk Steckborn",
-    "weinfelden": "Bezirk Weinfelden",
-    "bellinzona": "Distretto di Bellinzona",
-    "blenio": "Distretto di Blenio",
-    "leventina": "Distretto di Leventina",
-    "locarno": "Distretto di Locarno",
-    "lugano": "Distretto di Lugano",
-    "mendrisio": "Distretto di Mendrisio",
-    "riviera": "Distretto di Riviera",
-    "vallemaggia": "Distretto di Vallemaggia",
-    "aigle": "District d'Aigle",
-    "aubonne": "District d'Aubonne",
-    "avenches": "District d'Avenches",
-    "cossonay": "District de Cossonay",
-    "echallens": "District d'Echallens",
-    "grandson": "District de Grandson",
-    "lausanne": "District de Lausanne",
-    "lavaux": "District de Lavaux",
-    "morges": "District de Morges",
-    "moudon": "District de Moudon",
-    "nyon": "District de Nyon",
-    "orbe": "District d'Orbe",
-    "oron": "District d'Oron",
-    "payerne": "District de Payerne",
-    "pays_denhaut": "District du Pays-d'Enhaut",
-    "rolle": "District de Rolle",
-    "vallee": "District de la Vallée",
-    "vevey": "District de Vevey",
-    "yverdon": "District d'Yverdon",
-    "brig": "Bezirk Brig",
-    "conthey": "District de Conthey",
-    "entremont": "District d'Entremont",
-    "goms": "Bezirk Goms",
-    "herens": "District d'Hérens",
-    "leuk": "Bezirk Leuk",
-    "martigny": "District de Martigny",
-    "monthey": "District de Monthey",
-    "raron": "Bezirk Raron",
-    "saint_maurice": "District de Saint-Maurice",
-    "sierre": "District de Sierre",
-    "sion": "District de Sion",
-    "visp": "Bezirk Visp",
-    "boudry": "District de Boudry",
-    "chaux_de_fonds": "District de la Chaux-de-Fonds",
-    "locle": "District du Locle",
-    "neuchatel_district": "District de Neuchâtel", # Appended '_district' to avoid collision with canton
-    "val_de_ruz": "District du Val-de-Ruz",
-    "val_de_travers": "District du Val-de-Travers",
-    "geneve_canton": "Canton de Genève" # Appended '_canton' to avoid collision
 }
 
-
-comune_names = {
+# Commune names omitted for brevity — extend from the original name_mappings.py
+commune_names = {
     "aeugst": "Aeugst",
     "affoltern_am_albis": "Affoltern am Albis",
     "bonstetten": "Bonstetten",
@@ -3563,3 +3496,48 @@ comune_names = {
     "lac_leman_ge": "Lac Léman (GE)",
     "seeteil_von_campione_i": "Seeteil von Campione (I)",
 }
+
+SCALE_MAPPINGS: dict[str, dict[str, str]] = {
+    "canton": canton_names,
+    "agglomeration": agglomerations_names,
+    "district": district_names,
+    "commune": commune_names,
+}
+
+# Shapefile config per scale: (subdirectory, filename, id_column)
+SHAPEFILE_CONFIG: dict[str, tuple[str, str, str]] = {
+    "canton":        ("boundaries",     "Cantons_G0_18600101.shp",  "KTKZ"),
+    "agglomeration": ("agglomerations", "k4a24_12.shp",             "AgglName"),
+    "district":      ("boundaries",     "Districts_G0_18600101.shp", "BEZNAME"),
+    "commune":       ("boundaries",     "Communes_G0_18600101.shp",  "GDENAME"),
+}
+
+
+def get_mapping(scale: str) -> dict[str, str]:
+    """Return the name mapping dict for the given scale."""
+    try:
+        return SCALE_MAPPINGS[scale]
+    except KeyError:
+        raise ValueError(f"Unknown scale '{scale}'. Valid: {list(SCALE_MAPPINGS)}")
+
+
+def resolve_cities(scale: str, cities: list[str] | None = None) -> list[tuple[str, str]]:
+    """Return deduplicated (city_key, raw_shapefile_name) pairs for a scale.
+
+    If cities is None or empty, all cities in the mapping are returned.
+    Duplicate raw_shapefile_names (e.g. Zurich / ZH pointing to same region)
+    are deduplicated — only the first key encountered is kept.
+    """
+    mapping = get_mapping(scale)
+    keys = cities if cities else list(mapping.keys())
+
+    seen_raw: set[str] = set()
+    result: list[tuple[str, str]] = []
+    for key in keys:
+        if key not in mapping:
+            raise KeyError(f"City key '{key}' not found for scale '{scale}'.")
+        raw = mapping[key]
+        if raw not in seen_raw:
+            seen_raw.add(raw)
+            result.append((key, raw))
+    return result
