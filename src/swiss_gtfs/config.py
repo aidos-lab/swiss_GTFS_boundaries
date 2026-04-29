@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     import argparse
 
-VALID_SCALES = ("canton", "agglomeration", "district", "commune")
+VALID_SCALES = ("canton", "agglomeration", "district", "commune", "region", "provincia", "comuna")
 
 
 def _validate_scale(scale: str) -> None:
