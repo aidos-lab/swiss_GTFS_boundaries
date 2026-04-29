@@ -34,21 +34,26 @@ _MODE_WEIGHT: dict[str, float] = {
 
 
 def _route_type_color(rtype: int | float) -> str:
-    """Map a GTFS route_type integer to a colour string."""
+    """Map a GTFS route_type integer to a colour string (Supports Basic & HVT)."""
     try:
         rtype = int(rtype)
     except (TypeError, ValueError):
         return "gray"
-    if 100 <= rtype < 200:
-        return "red"
-    if 400 <= rtype < 500:
-        return "purple"
-    if 900 <= rtype < 1000:
-        return "orange"
-    if 700 <= rtype < 800:
-        return "blue"
-    return "gray"
 
+    # Train / Rail
+    if rtype == 2 or (100 <= rtype < 200):
+        return "red"
+    # Metro / Subway
+    if rtype == 1 or (400 <= rtype < 500):
+        return "purple"
+    # Tram
+    if rtype == 0 or (900 <= rtype < 1000):
+        return "orange"
+    # Bus
+    if rtype == 3 or (700 <= rtype < 800):
+        return "blue"
+
+    return "gray"
 
 # ---------------------------------------------------------------------------
 # Main visualisation function
@@ -83,7 +88,7 @@ def visualize_graph(
     """
     G_multi = nx.MultiDiGraph(G)
     if "crs" not in G_multi.graph:
-        G_multi.graph["crs"] = "EPSG:32632"
+        G_multi.graph["crs"] = "EPSG:4326"  # Changed from EPSG:32632
     G_proj = ox.project_graph(G_multi, to_crs="EPSG:4326")
 
     with zipfile.ZipFile(gtfs_zip_path, "r") as z:
