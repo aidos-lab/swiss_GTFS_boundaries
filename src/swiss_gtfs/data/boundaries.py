@@ -24,6 +24,12 @@ STAC_AGGLO_URL = (
     "ch.bfs.generalisierte-grenzen_agglomerationen_g1/items"
 )
 
+CHILE_BCN_URLS = {
+    "comuna": "https://www.bcn.cl/obtienearchivo?id=repositorio/10221/10396/2/Comunas.zip",
+    "provincia": "https://www.bcn.cl/obtienearchivo?id=repositorio/10221/10397/2/Provincias.zip",
+    "region": "https://www.bcn.cl/obtienearchivo?id=repositorio/10221/10398/2/Regiones.zip",
+}
+
 _SIDECAR_EXTS = [".shp", ".dbf", ".prj", ".shx", ".cpg", ".sbn", ".sbx", ".shp.xml"]
 
 
@@ -77,6 +83,23 @@ def _download_agglomeration_boundaries(geodata_dir: str) -> None:
         if src.exists():
             src.rename(dst)
 
+def _download_chilean_boundaries(scale: str, geodata_dir: str) -> None:
+    """Download Chilean BCN boundaries."""
+    url = CHILE_BCN_URLS.get(scale)
+    if not url:
+        raise ValueError(f"No BCN URL configured for scale '{scale}'")
+
+    dest_dir = os.path.join(geodata_dir, "boundaries_chl")
+    os.makedirs(dest_dir, exist_ok=True)
+    print(f"  Downloading Chilean boundaries for scale '{scale}' ...")
+
+    tmp = os.path.join(dest_dir, f"_tmp_{scale}.shp.zip")
+    download_file(url, tmp)
+
+    with zipfile.ZipFile(tmp) as zf:
+        zf.extractall(dest_dir)
+    os.remove(tmp)
+
 
 def shapefile_path(scale: str, geodata_dir: str) -> str:
     """Return the absolute path to the expected shapefile for a scale."""
@@ -98,6 +121,10 @@ def ensure_boundaries(scale: str, geodata_dir: str, refresh: bool = False) -> st
     print(f"[*] Fetching boundary data for scale='{scale}' ...")
     if scale == "agglomeration":
         _download_agglomeration_boundaries(geodata_dir)
+
+    elif scale in ["region", "provincia", "comuna"]:
+        _download_chilean_boundaries(scale, geodata_dir)
+
     else:
         _download_admin_boundaries(geodata_dir)
 

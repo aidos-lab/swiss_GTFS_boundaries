@@ -15,6 +15,11 @@ from pathlib import Path
 
 import requests
 
+CHILE_GTFS_URLS = {
+    "20260425": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260425_final.zip",
+
+}
+
 GTFS_DOWNLOAD_PAGE = "https://data.opentransportdata.swiss/dataset/timetable-2026-gtfs2020"
 
 _VERSION_RE = re.compile(r'href="(https?://[^"]*gtfs_fp\d{4}_(\d{8})\.zip)"')
@@ -74,15 +79,12 @@ def resolve_gtfs(
     gtfs_path: str | None = None,
     refresh_gtfs: bool = False,
 ) -> tuple[str, str, str]:
-    """Locate or download the GTFS feed.
+    """Locate or download the GTFS feed."""
 
-    Returns (zip_path, extracted_dir, version).
-    zip_path is an empty string when gtfs_path points directly to a directory.
-    version is YYYYMMDD when determinable, otherwise 'custom'.
-    """
+    # 1. Handle local file bypass
     if gtfs_path:
         p = os.path.abspath(gtfs_path)
-        m = re.search(r'gtfs_fp\d{4}_(\d{8})', os.path.basename(p))
+        m = re.search(r'(\d{8})', os.path.basename(p)) # Generalized regex
         version = m.group(1) if m else "custom"
         if os.path.isdir(p):
             return ("", p, version)
@@ -93,6 +95,27 @@ def resolve_gtfs(
             return (p, extracted_dir, version)
         raise ValueError(f"gtfs_path '{p}' is neither a directory nor a valid zip.")
 
+    # 2. Handle Chilean GTFS natively
+    if gtfs_version in CHILE_GTFS_URLS:
+        version = gtfs_version
+        url = CHILE_GTFS_URLS[version]
+        filename = f"GTFS_{version}_final.zip"
+        zip_path = os.path.join(data_dir, filename)
+
+        if os.path.exists(zip_path) and not refresh_gtfs:
+            print(f"[+] GTFS already present: {zip_path}")
+        else:
+            print(f"[*] Downloading Chilean GTFS version {version} ...")
+            os.makedirs(data_dir, exist_ok=True)
+            download_file(url, zip_path)
+            print(f"[+] Saved to {zip_path}")
+
+        stem = os.path.splitext(filename)[0]
+        extracted_dir = os.path.join(data_dir, stem)
+        extract_gtfs(zip_path, extracted_dir, force=refresh_gtfs)
+        return (zip_path, extracted_dir, version)
+
+    # 3. Fallback to Swiss Scraper
     versions = scrape_gtfs_versions()
     if not versions:
         raise RuntimeError("No GTFS versions found on the dataset page.")
@@ -100,15 +123,10 @@ def resolve_gtfs(
     if gtfs_version:
         matching = [(v, u) for v, u in versions if v == gtfs_version]
         if not matching:
-            available = ", ".join(v for v, _ in versions)
-            raise ValueError(
-                f"GTFS version '{gtfs_version}' not found.\n"
-                f"Available: {available}\n"
-                f"Use list_available_versions() to inspect."
-            )
+            raise ValueError(f"GTFS version '{gtfs_version}' not found.")
         version, url = matching[0]
     else:
-        version, url = versions[-1]
+        version, url = versions[-1] # Default to latest Swiss if nothing specified
 
     m = _FILENAME_RE.search(url)
     if not m:
@@ -119,7 +137,7 @@ def resolve_gtfs(
     if os.path.exists(zip_path) and not refresh_gtfs:
         print(f"[+] GTFS already present: {zip_path}")
     else:
-        print(f"[*] Downloading GTFS version {version} ...")
+        print(f"[*] Downloading Swiss GTFS version {version} ...")
         os.makedirs(data_dir, exist_ok=True)
         download_file(url, zip_path)
         print(f"[+] Saved to {zip_path}")

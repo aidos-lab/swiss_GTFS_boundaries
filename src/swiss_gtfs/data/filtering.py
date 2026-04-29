@@ -98,6 +98,23 @@ def filter_gtfs_city(
         calendar_dates["service_id"].isin(filtered_service_ids)
     ]
 
+    # --- ADD THIS BLOCK FOR CHILE ---
+    freq_path = os.path.join(in_dir, "frequencies.txt")
+    if os.path.exists(freq_path):
+        frequencies = pd.read_csv(freq_path)
+        filtered_frequencies = frequencies[frequencies["trip_id"].isin(filtered_trip_ids)]
+    else:
+        filtered_frequencies = None
+
+    shapes_path = os.path.join(in_dir, "shapes.txt")
+    if os.path.exists(shapes_path):
+        shapes = pd.read_csv(shapes_path)
+        filtered_shape_ids = set(filtered_trips["shape_id"].dropna())
+        filtered_shapes = shapes[shapes["shape_id"].isin(filtered_shape_ids)]
+    else:
+        filtered_shapes = None
+    # --------------------------------
+
     os.makedirs(os.path.dirname(os.path.abspath(out_path)), exist_ok=True)
 
     tables = {
@@ -109,6 +126,12 @@ def filter_gtfs_city(
         "calendar.txt": filtered_calendar,
         "calendar_dates.txt": filtered_calendar_dates,
     }
+
+    # --- ADD THIS TO INCLUDE THEM IN THE ZIP ---
+    if filtered_frequencies is not None:
+        tables["frequencies.txt"] = filtered_frequencies
+    if filtered_shapes is not None:
+        tables["shapes.txt"] = filtered_shapes
     with zipfile.ZipFile(out_path, "w", compression=zipfile.ZIP_DEFLATED) as zip_out:
         for fname, df in tables.items():
             zip_out.writestr(fname, df.to_csv(index=False))
