@@ -14,10 +14,9 @@ from __future__ import annotations
 import argparse
 import os
 import time
-
-import gtfs2nx as gx
+#import gtfs2nx as gx
 import numpy as np
-
+import networkx as nx
 from swiss_gtfs.config import VALID_SCALES, FeatureConfig
 from swiss_gtfs.features.persistence import compute_and_save
 from swiss_gtfs.features.vectorize import build_feature_matrix
@@ -37,6 +36,8 @@ def parse_args() -> argparse.Namespace:
                    help="Specific city keys (default: all).")
     p.add_argument("--gtfs-dir", default="Data",
                    help="Directory containing filtered GTFS zips ({scale}/{version}/{city}.zip).")
+    p.add_argument("--graphs-dir", default="outputs/graphs",
+                   help="Directory containing city2graph GraphML files.")
     p.add_argument("--diagrams-dir", default="outputs/diagrams")
     p.add_argument("--features-dir", default="outputs/features")
     p.add_argument("--start-time", default="07:00:00", help="Time-window start (HH:MM:SS).")
@@ -47,6 +48,8 @@ def parse_args() -> argparse.Namespace:
                    help="Sample points for landscape vectorization.")
     p.add_argument("--force", action="store_true",
                    help="Recompute even if .npz already exists.")
+    p.add_argument("--thresh", type=float, default=7200.0,
+                   help="Maximum Ripser filtration threshold in seconds (default: 3600s).")
     return p.parse_args()
 
 
@@ -68,19 +71,37 @@ def main() -> None:
 
         try:
             t0 = time.time()
-            G = gx.transit_graph(gtfs_path, time_window=(args.start_time, args.end_time))
-            if len(G.nodes()) < 2:
-                print(f"  [!] Graph too small ({len(G.nodes())} nodes). Skipping.")
-                continue
-            print(f"  [+] Graph: {len(G.nodes())} nodes, {len(G.edges())} edges ({time.time()-t0:.1f}s)")
 
+            # --- 1. LOAD THE CITY2GRAPH GRAPHML ---
+            graphml_path = os.path.join(args.graphs_dir, args.scale, args.gtfs_version, f"{city_key}.graphml")
+            if not os.path.exists(graphml_path):
+                print(f"  [!] Missing GraphML: {graphml_path}. Run gtfs-build first.")
+                continue
+
+            G = nx.read_graphml(graphml_path)
+
+
+
+
+            # ------------------------------------------
+            # --- 2. HANDLE DISCONNECTED NODES ---
+            G_undirected = G.to_undirected()
+            if not nx.is_connected(G_undirected):
+                largest_cc = max(nx.connected_components(G_undirected), key=len)
+                dropped_count = len(G.nodes()) - len(largest_cc)
+                G = G.subgraph(largest_cc).copy()
+                print(f"  [!] Graph disconnected. Dropped {dropped_count} nodes. Using largest component ({len(G.nodes())} nodes).")
+            # ---------------------------------------------
+
+            print(f"  [+] Graph: {len(G.nodes())} nodes, {len(G.edges())} edges ({time.time()-t0:.1f}s)")
+            # ---------------------------------------------
             t1 = time.time()
             dist_matrix = compute_distance_matrix(G)
             print(f"  [+] Distance matrix ({time.time()-t1:.1f}s)")
 
             compute_and_save(
                 city_key, args.scale, dist_matrix,
-                args.diagrams_dir, skip_existing=skip_existing, gtfs_version=args.gtfs_version
+                args.diagrams_dir, skip_existing=skip_existing, gtfs_version=args.gtfs_version, thresh=args.thresh
             )
         except Exception as e:
             print(f"  [!] Error for '{city_key}': {e}")

@@ -120,6 +120,8 @@ def main() -> None:
             continue
 
         try:
+            inject_manual_transfers = args.scale in {"region", "provincia", "comuna"}
+
             nodes_gdf, edges_gdf = build_summary_graph(
                 filtered_path,
                 start_time=cfg.start_time,
@@ -127,6 +129,7 @@ def main() -> None:
                 calendar_start=cfg.calendar_start,
                 calendar_end=cfg.calendar_end,
                 directed=cfg.directed,
+                inject_manual_transfers=inject_manual_transfers,
             )
             print(f"  [+] Graph: {len(nodes_gdf)} nodes, {len(edges_gdf)} edges")
             save_graph_artifacts(city_key, args.scale, nodes_gdf, edges_gdf, cfg, gtfs_version)
