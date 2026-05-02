@@ -69,6 +69,7 @@ def compute_and_save(
     diagrams_dir: str,
     skip_existing: bool = True,
     gtfs_version: str = "",
+    thresh: float | None = None,
 ) -> str | None:
     """Compute diagrams from a distance matrix and save to disk.
 
